@@ -1,0 +1,508 @@
+:root {
+  /* Colores Base Tipo Cattpuccin y Glaze */
+  --base: #1e1e2e;
+  --mantle: #181825;
+  --crust: #11111b;
+  --surface0: #313244;
+  --surface1: #45475a;
+  --surface2: #585b70;
+  --overlay0: #6c7086;
+  --overlay1: #7f849c;
+  --overlay2: #9399b2;
+  --text: #cdd6f4;
+  --subtext0: #a6adc8;
+  --subtext1: #bac2de;
+  --lavender: #b4befe;
+  --blue: #89b4fa;
+  --sapphire: #74c7ec;
+  --sky: #89dceb;
+  --teal: #94e2d5;
+  --green: #a6e3a1;
+  --yellow: #f9e2af;
+  --peach: #fab387;
+  --maroon: #eba0ac;
+  --red: #f38ba8;
+  --mauve: #cba6f7;
+  --pink: #f5c2e7;
+  --flamingo: #f2cdcd;
+  --rosewater: #f5e0dc;
+  
+  /* --- MIKU COSMIC: VARIABLES DE DISEÑO (Edítalas aquí) --- */
+  --miku-cyan: #39c5bb;        /* Turquesa Miku icónico */
+  --miku-cyan-dim: #39c5bb15;   /* Turquesa muy translúcido para bordes/resplandores */
+  --miku-king: #1e90ff;        /* Azul rey para acentuar */
+  --miku-ding-dong: #f9e2af;      /* Amarillo eléctrico para alertas */
+  
+  /* Ajuste de Translucidez Cósmica: 
+     0.0 (Invisible) a 1.0 (Opaco). */
+  --acrylic-depth-alpha: 0.85;  /* Opacidad del degradado negro central */
+  
+  /* Degradado de las tres secciones flotantes */
+  --miku-gradient: linear-gradient(
+    135deg, 
+    rgba(30, 30, 46, 0.45) 0%,   /* Inicio sutil gris-azulado */
+    rgba(10, 10, 20, var(--acrylic-depth-alpha)) 40%, /* Negro acrílico */
+    rgba(10, 10, 20, var(--acrylic-depth-alpha)) 60%, /* Negro acrílico */
+    rgba(57, 197, 187, 0.20) 100%  /* Fin con toque turquesa (La "mancha Miku") */
+  );
+}
+
+* {
+  font-size: 14px;
+  font-family: "JetBrainsMono NFP", "JetBrainsMono Nerd Font Propo", monospace;
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* 1. BARRA PRINCIPAL: Completamente Invisible */
+.yasb-bar {
+  background: none; 
+  border: none;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+/* 2. LOS 3 MÓDULOS FLOTANTES: Degradado Cósmico y Resplandor Suave */
+.container-left, .container-center, .container-right {
+  background: var(--miku-gradient);
+  
+  /* Bordes redondeados y un resplandor muy suave para difuminarlos */
+  border: 1px solid rgba(57, 197, 187, 0.08); /* Borde turquesa ultra-sutil */
+  border-radius: 14px;
+  
+  /* ¡EFECTO CLAVE!: Sombra interior que crea un resplandor turquesa suave */
+  box-shadow: inset 0 0 8px 2px var(--miku-cyan-dim);
+  
+  margin: 0 10px; /* Separación simétrica */
+  padding: 0 14px; /* Un poco más de aire interno */
+}
+
+/* Ajuste general de los widgets internos */
+.widget {
+  padding: 0 6px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+}
+
+.widget .widget-container {
+  border-radius: 8px;
+  padding: 2px 4px;
+}
+
+.widget .label, .widget .icon {
+  padding: 0 3px;
+  font-weight: 600;
+}
+
+.widget .icon {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+/* Popups y Menús Desplegables (Mismo estilo cósmico) */
+.notes-menu, .todo-menu, .ai-chat-popup, .github-menu, .traffic-menu, .cpu-popup, .memory-popup, .gpu-popup, .pomodoro-menu, .audio-menu, .wifi-menu, .brightness-menu, .open-meteo-card {
+  background: linear-gradient(180deg, rgba(30, 30, 46, 0.9) 0%, rgba(5, 5, 10, 0.98) 100%);
+  border: 1px solid rgba(57, 197, 187, 0.15);
+  border-radius: 12px;
+}
+
+/* Scrollbars */
+QScrollBar:vertical { background-color: #0003; width: 8px; border-radius: 4px; }
+QScrollBar:horizontal { background-color: #0003; height: 8px; border-radius: 4px; }
+QScrollBar::handle { background-color: var(--surface2); border-radius: 4px; }
+QScrollBar::handle:hover { background-color: var(--miku-cyan); }
+QScrollBar::add-line, QScrollBar::sub-line { height: 0; width: 0; }
+QScrollBar::add-page, QScrollBar::sub-page { background: none; }
+
+/* --- ESTILOS DE GLAZEWM (Espacios de trabajo) --- */
+.glazewm-workspaces { margin: 0; padding: 0 4px; }
+.glazewm-workspaces .ws-btn { font-size: 13px; background-color: transparent; border: none; padding: 4px 8px; margin: 0 3px; color: var(--overlay1); border-radius: 6px; }
+.glazewm-workspaces .ws-btn.populated { color: var(--subtext1); }
+.glazewm-workspaces .ws-btn.active_populated, .glazewm-workspaces .ws-btn.active_empty { color: var(--miku-cyan); background-color: rgba(57, 197, 187, 0.15); font-weight: 700; }
+.glazewm-workspaces .ws-btn:hover, .glazewm-workspaces .ws-btn.populated:hover { background-color: #ffffff14; color: var(--text); }
+.glazewm-workspaces .offline-status { color: var(--red); font-size: 11px; font-weight: 600; }
+
+/* --- WIDGETS DE MONITOREO (Letras Azul Turquesa) --- */
+
+/* Reloj */
+.clock-widget { padding: 0 8px; }
+.clock-widget .icon { color: var(--blue); font-size: 14px; padding-right: 5px; }
+.clock-widget .label { color: var(--miku-cyan); font-weight: 600; }
+
+/* Monitores de Hardware */
+.cpu-widget, .memory-widget, .disk-widget, .gpu-widget { padding: 0 6px; }
+.cpu-widget .icon { color: var(--mauve); font-size: 14px; }
+.memory-widget .icon { color: var(--blue); font-size: 14px; }
+.disk-widget .icon { color: var(--sapphire); font-size: 14px; }
+.gpu-widget .icon { color: var(--pink); font-size: 14px; }
+
+/* Texto numérico en Turquesa */
+.cpu-widget .label, .memory-widget .label, .disk-widget .label, .gpu-widget .label {
+  color: var(--miku-cyan); 
+  font-weight: 600;
+}
+
+/* Estados de alerta para monitores (Se mantienen para seguridad) */
+.cpu-widget .label.status-medium, .memory-widget .label.status-medium, .gpu-widget .label.status-medium { color: var(--yellow); }
+.cpu-widget .label.status-high, .memory-widget .label.status-high, .gpu-widget .label.status-high { color: var(--peach); }
+.cpu-widget .label.status-critical, .memory-widget .label.status-critical, .gpu-widget .label.status-critical { color: var(--red); }
+
+/* Controles de Brillo y Volumen */
+.brightness-widget, .volume-widget { padding: 0 6px; }
+.brightness-widget .icon { color: var(--yellow); font-size: 14px; padding: 0 5px; }
+.volume-widget .icon { color: var(--teal); font-size: 14px; margin-right: 3px; padding: 0 3px; }
+.volume-widget .label { color: var(--miku-cyan); font-weight: 600; }
+.volume-widget .label.muted, .volume-widget .icon.muted { color: var(--overlay0); }
+
+/* Systray y Menú de Apagado */
+.systray { background: transparent; border: none; }
+.systray .button { border-radius: 4px; padding: 2px; }
+.systray .button:hover { background: #ffffff1a; }
+.power-menu-widget .label { color: var(--miku-cyan); font-size: 16px; }
+
+/* Overlay y Menú de Energía */
+.power-menu-overlay { background-color: rgba(0,0,0,0.6); }
+.power-menu-popup { background: rgba(10, 10, 20, 0.95); border: 1px solid rgba(57, 197, 187, 0.15); border-radius: 14px; padding: 28px; }
+.power-menu-popup .profile-username { font-size: 20px; font-weight: 600; color: var(--miku-cyan); }
+.power-menu-popup .button { background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; margin: 6px; min-width: 130px; min-height: 90px; }
+.power-menu-popup .button.hover { background-color: rgba(57, 197, 187, 0.1); border-color: var(--miku-cyan); }
+
+/* =========================================
+   NOTIFICACIONES: ESTILO MIKU COSMIC
+   ========================================= */
+
+/* Fondo de las notificaciones: Acrílico Cósmico */
+.notification-widget{padding:0 5px}
+.notification-widget .icon{font-size:14px;color:var(--overlay2)}
+.notification-widget .icon.new-notification{color:var(--miku-ding-dong)}
+.notification-widget .label.new-notification{color:var(--pink);font-weight:600}
+
+   /* =========================================
+   MIKU HACKER Y BOTÓN DE ENERGÍA
+   ========================================= */
+
+/* 1. COMPORTAMIENTO DEL BOTÓN DE POWER */
+.power-menu-widget .label,
+.power-menu-widget .icon {
+  color: var(--mauve) !important; /* Morado en estado inactivo */
+  font-size: 16px;
+}
+
+.power-menu-widget:active .label,
+.power-menu-widget:active .icon {
+  color: var(--red) !important; /* Rojo al hacer click */
+}
+
+/* 2. TOOLTIP Y HOVER (Volumen, etc.) */
+.tooltip, .label-alt {
+  background-color: rgba(10, 10, 20, 0.75) !important; /* Fondo transparente oscuro */
+  border: 1px solid var(--miku-cyan) !important; /* Borde estrictamente Cian */
+  box-shadow: 0 0 10px rgba(57, 197, 187, 0.2) !important;
+  border-radius: 6px;
+  color: var(--mauve) !important; /* Letras Moradas */
+  font-family: "JetBrainsMono NFP", monospace;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* 3. MENÚS DETALLADOS (CPU/GPU/RAM) */
+.cpu-popup, .memory-popup, .gpu-popup {
+  background-color: rgba(10, 10, 20, 0.75) !important; /* Transparencia segura */
+  border: 1px solid var(--miku-cyan) !important;
+  box-shadow: inset 0 0 15px rgba(57, 197, 187, 0.1), 0 0 12px rgba(57, 197, 187, 0.2);
+  border-radius: 8px;
+}
+
+/* Cabecera del menú detallado */
+.cpu-popup .header .text, .memory-popup .header .text, .gpu-popup .header .text {
+  color: var(--miku-cyan);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 12px;
+  border-bottom: 1px dashed rgba(57, 197, 187, 0.4);
+}
+
+/* Textos de monitoreo */
+.cpu-popup .stats .stat-label, .memory-popup .stats .stat-label, .gpu-popup .stats .stat-label {
+  color: rgba(57, 197, 187, 0.6);
+  font-family: monospace;
+  font-size: 12px;
+}
+.cpu-popup .stats .stat-value, .memory-popup .stats .stat-value, .gpu-popup .stats .stat-value {
+  color: var(--text);
+  font-family: monospace;
+  font-weight: 700;
+  text-shadow: 0 0 6px rgba(205, 214, 244, 0.6);
+}
+.cpu-popup .cpu-graph, .memory-popup .memory-graph { color: var(--miku-cyan); }
+.gpu-popup .gpu-graph { color: var(--mauve); }
+.cpu-popup .cpu-graph-grid, .memory-popup .memory-graph-grid, .gpu-popup .gpu-graph-grid { 
+  color: rgba(57, 197, 187, 0.15) !important; 
+}
+
+/* =========================================
+   REDISEÑO: CALENDARIO MIKU COSMIC
+   ========================================= */
+
+/* 1. Limpieza estructural de la tabla */
+.clock-popup .calendar-table, .clock-popup .calendar-table::item,
+.calendar .calendar-table, .calendar .calendar-table::item { 
+    background-color: transparent !important; 
+    border: none !important; 
+    outline: none !important;
+    color: var(--text) !important; /* Color blanco/gris claro para los números de los días */
+}
+
+/* 2. Panel Izquierdo: Textos (Día y Mes) */
+.clock-popup .day-label, 
+.clock-popup .month-label, 
+.clock-popup .year-label,
+.calendar .day-label, 
+.calendar .month-label {
+    font-size: 18px !important;
+    color: var(--miku-cyan) !important; /* Turquesa para las letras */
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* 3. Panel Izquierdo: El Número Gigante de la Fecha */
+.clock-popup .date-label,
+.calendar .date-label {
+    font-size: 72px !important; /* ¡Número gigante restaurado! */
+    font-weight: 900;
+    color: var(--mauve) !important; /* Morado para que resalte muchísimo */
+    margin-top: 5px;
+    text-shadow: 0 0 15px rgba(203, 166, 247, 0.3); /* Resplandor morado suave */
+}
+
+/* 4. El Día Seleccionado en la cuadrícula */
+.clock-popup .calendar-table::item:selected,
+.calendar .calendar-table::item:selected {
+    background-color: var(--mauve) !important; /* Fondo morado sólido */
+    color: var(--crust) !important; /* Letra muy oscura para máximo contraste */
+    border-radius: 8px;
+    font-weight: 800;
+}
+
+/* 5. Hover al pasar el mouse por los días (Efecto cristalino) */
+.clock-popup .calendar-table::item:hover,
+.calendar .calendar-table::item:hover {
+    background-color: rgba(57, 197, 187, 0.2) !important; /* Fondo turquesa muy transparente */
+    border-radius: 8px;
+}
+
+/* =========================================
+   MIKU COSMIC AUDIO MENU (ARCADE & MIKU)
+   ========================================= */
+
+/* 1. Fondo de los menús (Acrílico Translúcido) y Borde Cian */
+.audio-menu, .audio-container {
+    background: linear-gradient(180deg, rgba(20, 20, 35, 0.65) 0%, rgba(5, 5, 10, 0.85) 100%) !important;
+    border: 1px solid var(--miku-cyan) !important;
+    box-shadow: 0 0 10px rgba(57, 197, 187, 0.3) !important;
+    border-radius: 12px;
+    padding: 16px !important; /* Más aire general para que respire */
+}
+
+/* 2. Dispositivos (Letras Moradas) */
+.audio-container .device {
+    color: rgba(203, 166, 247, 0.75) !important; 
+    font-weight: 600;
+    padding: 8px 12px !important; 
+    margin: 3px 0 !important; /* Quitamos margen lateral para alinear con el slider */
+    border-radius: 6px;
+    background-color: transparent;
+}
+
+/* 3. Hover (Brillo suave al pasar el ratón) */
+.audio-container .device:hover {
+    background-color: rgba(203, 166, 247, 0.15) !important; 
+    color: var(--mauve) !important; 
+}
+
+/* 4. Dispositivo Seleccionado (Acento Turquesa) */
+.audio-container .device.selected {
+    background-color: rgba(57, 197, 187, 0.15) !important; 
+    color: var(--miku-cyan) !important; 
+    border-left: 4px solid var(--miku-cyan) !important; 
+    border-radius: 4px;
+}
+
+/* =========================================
+   VOLUME SLIDER: ESTILO ARCADE SIMÉTRICO
+   ========================================= */
+
+QSlider {
+    background: transparent !important;
+    min-height: 24px !important;
+    margin-top: 18px !important; /* Separación clara entre los textos y la barra */
+    margin-bottom: 2px !important; /* Aire en la parte inferior */
+}
+
+/* El "riel" o fondo de la barra */
+QSlider::groove:horizontal {
+    background: rgba(255, 255, 255, 0.15) !important;
+    height: 6px !important; 
+    border-radius: 3px !important;
+    margin: 0 4px !important; /* Ajuste para que la barra mida lo mismo que el texto */
+}
+
+/* La parte llena de la barra (Amarillo) */
+QSlider::sub-page:horizontal {
+    background: var(--yellow) !important;
+    border-radius: 3px !important;
+}
+
+/* Para que la parte vacía no haga cosas raras */
+QSlider::add-page:horizontal {
+    background: transparent !important;
+}
+
+/* El "Thumb" o agarradera (Rectángulo Arcade) */
+QSlider::handle:horizontal {
+    background: var(--crust) !important; 
+    border: 2px solid var(--yellow) !important; 
+    width: 10px !important; 
+    height: 18px !important; 
+    margin: -6px 0 !important; 
+    border-radius: 2px !important; 
+    cursor: pointer !important;
+}
+
+/* Iluminar todo el rectángulo al tocarlo */
+QSlider::handle:horizontal:hover {
+    background: var(--yellow) !important; 
+}
+
+/* =========================================
+   MEDIA CONTROLS (Miku Player - Pro)
+   ========================================= */
+
+/* Hacemos el contenedor general transparente para no dejar rastros vacíos */
+.media-widget {
+    background: linear-gradient(180deg, rgba(20, 20, 35, 0.65) 0%, rgba(5, 5, 10, 0.85) 100%) !important;
+    border: 1px solid var(--miku-cyan) !important;
+    box-shadow: 0 0 10px rgba(57, 197, 187, 0.2) !important;
+    border-radius: 8px !important;
+    padding: 4px 12px !important;
+    margin: 0 4px !important;
+    font-family: "JetBrainsMono NFP", monospace !important;
+}
+
+.media-widget:hover {
+    background: rgba(57, 197, 187, 0.1) !important;
+    border: 1px solid var(--mauve) !important;
+    cursor: pointer !important;
+}
+
+/* =========================================
+   ESTILOS: BOTÓN DE CLIMA EN LA BARRA
+   ========================================= */
+.weather-widget {
+    padding: 0 6px;
+}
+
+/* El icono del sol/clima se mantiene amarillo */
+.weather-widget .icon, 
+.weather-widget span {
+    color: var(--yellow) !important;
+    font-size: 16px;
+    padding-right: 4px;
+}
+
+/* El texto (ya sea "CLIMA" o "22°C") en turquesa con fuente limpia */
+.weather-widget .label,
+.weather-widget .label-alt {
+    color: var(--mauve) !important;
+    font-family: "Bahnschrift", sans-serif !important;
+    font-weight: 600;
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+
+/* Efecto hover interactivo: cambia a morado al pasar el ratón */
+.weather-widget:hover .label,
+.weather-widget:hover .label-alt,
+.weather-widget:hover span {
+    color: var(--mauve) !important;
+    cursor: pointer !important;
+}
+
+/* =========================================
+   REDISEÑO: PAPELERA DE RECICLAJE (TRASH)
+   ========================================= */
+.trash-widget {
+    padding: 0 6px;
+}
+
+/* Color rojo por defecto */
+.trash-widget .label,
+.trash-widget .icon {
+    color: var(--miku-red) !important;
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+/* Al pasar el cursor se vuelve morado (Mauve) */
+.trash-widget:hover .label,
+.trash-widget:hover .icon {
+    color: var(--mauve) !important;
+    cursor: pointer !important;
+}
+
+/* Al hacer clic derecho o izquierdo cambia a rojo (Red) como advertencia */
+.trash-widget:active .label,
+.trash-widget:active .icon {
+    color: var(--red) !important;
+}
+
+/* =========================================
+   COLORES DE ACTIVE WINDOW (Ventana Activa)
+   ========================================= */
+.active-window-widget {
+    padding: 0 6px;
+}
+.active-window-widget .label,
+.active-window-widget .icon {
+    color: var(--miku-cyan) !important;
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+.active-window-widget:hover .label,
+.active-window-widget:hover .icon {
+    color: var(--mauve) !important;
+    cursor: pointer !important;
+}
+.active-window-widget:active .label,
+.active-window-widget:active .icon {
+    color: var(--miku-cyan) !important;
+}
+
+/* =========================================
+   BOTÓN DE INTELIGENCIA ARTIFICIAL (Miku AI Chat)
+   ========================================= */
+.ai-widget {
+    padding: 0 7px;
+}
+
+/* El botón siempre fijo en tu Azul Rey (apuntando al span y al icon) */
+.ai-widget .label span,
+.ai-widget .icon {
+    color: var(--miku-king) !important; 
+    font-size: 16px;
+    padding-right: 4px;
+    transition: text-shadow 0.2s ease;
+}
+
+/* Al pasar el cursor enciende el resplandor */
+.ai-widget:hover .label span,
+.ai-widget:hover .icon {
+    cursor: pointer !important;
+    text-shadow: 0 0 10px rgba(30, 144, 255, 0.8) !important;
+}

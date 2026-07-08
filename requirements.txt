@@ -1,0 +1,5 @@
+Pillow
+PyQt6
+psutil
+requests
+winsdk

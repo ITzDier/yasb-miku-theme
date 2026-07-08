@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+*.log
+
+# Runtime state generated locally
+scripts/launcher_recent.json
+scripts/media_cache.json
+scripts/notif_count.txt
+
+# User-provided and generated avatar images
+assets/profile.*
+assets/miku_avatar.png
+
+# Local editor and environment files
+.env
+.venv/
+.idea/
+.vscode/
+
+# Windows and common generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.tmp
+*.bak
+build/
+dist/

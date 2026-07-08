@@ -1,0 +1,226 @@
+# Miku Cosmic | Dashboard Configuration
+# Instala esta carpeta en: %USERPROFILE%/.config/yasb
+
+watch_stylesheet: true
+watch_config: true
+debug: false
+
+bars:
+  yasb-bar:
+    screens: ['primary']
+    class_name: "yasb-bar"
+    window_flags:
+      always_on_top: true
+      windows_app_bar: true
+      hide_on_fullscreen: true
+    alignment:
+      position: "top"
+      align: "center"
+    blur_effect:
+      enabled: false
+      dark_mode: true
+    dimensions:
+      width: "98%"
+      height: 44
+    padding: {top: 5, left: 6, bottom: 0, right: 6}
+    widgets:
+      left:
+        - "miku_start_tie"
+        - "glazewm_workspaces"
+        - "weather"
+        - "miku_ai"
+        - "active_window"
+      center:
+        - "cpu"
+        - "gpu"
+        - "memory"
+        - "disk"
+        - "trash"
+      right:
+        - "miku_media_controls"
+        - "systray"
+        - "brightness"
+        - "volume"
+        - "clock"
+        - "power_menu"
+        - "notifications"
+
+widgets:
+  # Botón Corbata (Lanzador)
+  miku_start_tie:
+    type: "yasb.custom.CustomWidget"
+    options:
+      class_name: "tie-button"
+      label: "<img src='assets/Miku_Tie.png' width='14' height='30'>"
+      callbacks:
+        on_left: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/launcher.py"'
+       
+  glazewm_workspaces:
+    type: "glazewm.workspaces.GlazewmWorkspacesWidget"
+    options:
+      offline_label: "GlazeWM Offline"
+      hide_if_offline: false
+
+  weather:
+    type: "yasb.weather.WeatherWidget"
+    options:
+      label: "<span>{icon}</span> {temp}"
+      label_alt: "<span>{icon}</span> Mín {min_temp} / Máx {max_temp} | Humedad: {humidity}"
+      api_key: 'YOUR_WEATHERAPI_KEY'
+      update_interval: 600
+      hide_decimal: true
+      location: 'YOUR_CITY'
+      callbacks:
+        # Clic izquierdo: Abre tu ventana Miku de Python
+        on_left: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/miku_weather.py"'
+        # Clic derecho: Alterna entre temperatura y la palabra CLIMA
+        on_right: "toggle_label"
+      icons: 
+        sunnyDay: "󰖙"      
+        clearNight: "󰖔"
+        cloudyDay: "󰖕"
+        cloudyNight: "󰼱"
+        rainyDay: "󰖖"
+        rainyNight: "󰖖"
+        snowyDay: "󰖘"
+        snowyNight: "󰖘"
+        blizzardDay: "󰼶"
+        default: "󰖕"
+
+  miku_ai:
+    type: "yasb.custom.CustomWidget"
+    options:
+      class_name: "ai-widget"
+      label: "<span>\uDB81\uDE74</span>" # Icono de la IA
+      callbacks:
+        on_left: 'exec cmd /c start "" pythonw "%USERPROFILE%/.config/yasb/scripts/miku_ai.py"'
+  
+  active_window:
+    type: "yasb.active_window.ActiveWindowWidget"
+    options:
+      label: "{win[title]}"
+      label_alt: "[class_name='{win[class_name]}' exe='{win[process][name]}' hwnd={win[hwnd]}]"
+      label_no_window: ""
+      label_icon: true
+      label_icon_size: 14
+      max_length: 50
+      max_length_ellipsis: "..."
+      monitor_exclusive: true
+
+  cpu:
+    type: "yasb.cpu.CpuWidget"
+    options:
+      label: "<span>\uf4bc</span> {info[percent][total]}%"
+      update_interval: 2000
+
+  gpu:
+    type: "yasb.gpu.GpuWidget"
+    options:
+      label: "<span>\udb81\udd03</span> {info[utilization]}%"
+      update_interval: 2000
+
+  memory:
+    type: "yasb.memory.MemoryWidget"
+    options:
+      label: "<span>\uefc5</span> {virtual_mem_percent}%"
+      update_interval: 2000
+
+  disk:
+    type: "yasb.disk.DiskWidget"
+    options:
+      label: "<span>\uf473</span> {space[used][percent]}"
+      label_alt: "<span>\uf473</span> Libres: {space[free][gib]}GiB"
+      update_interval: 1000
+      group_label:
+        volume_labels: ["C"] # Añade aquí las letras de tus otros discos
+        show_label_name: false 
+        blur: true
+        round_corners: true
+        round_corners_type: "small"
+        border_color: '#94e2d5' # Color turquesa para combinar
+        alignment: 'center'
+        offset_top: 0
+      callbacks:
+        on_left: "toggle_group"
+
+  trash:
+    type: "yasb.custom.CustomWidget"
+    options:
+      class_name: "trash-widget"
+      label: "<span>󰩹</span>" # Icono de papelera de JetBrainsMono NFP
+      callbacks:
+        on_left: "exec explorer.exe shell:RecycleBinFolder" # Abre la papelera en el explorador
+        on_right: "exec powershell.exe -NoProfile -Command Clear-RecycleBin -Force -ErrorAction SilentlyContinue" # La vacía en segundo plano      
+
+  # Control Multimedia 
+  miku_media_controls:
+    type: "yasb.custom.CustomWidget"
+    options:
+      class_name: "media-widget"
+      label: "{data}" 
+      exec_options:
+        run_cmd: 'python "%USERPROFILE%/.config/yasb/scripts/miku_media.py"'
+        run_interval: 1000 
+        return_format: "string"
+      callbacks:
+        on_left: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/miku_media.py" playpause'
+        on_middle: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/miku_media.py" prev'
+        on_right: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/miku_media.py" next'
+
+  systray:
+    type: "yasb.systray.SystrayWidget"
+    options:
+      class_name: "systray"
+      show_network: true
+
+  brightness:
+    type: "yasb.brightness.BrightnessWidget"
+    options:
+      label: "<span>{icon}</span>"
+
+  volume:
+    type: "yasb.volume.VolumeWidget"
+    options:
+      label: "<span>{icon}</span> {level}"
+      label_alt: "VOLUME {volume}"
+      audio_menu:
+        blur: true
+        round_corners: true
+        border_color: "#39c5bb"
+        alignment: "center"
+        direction: "down"
+        offset_top: 0
+      callbacks:
+        on_right: "exec cmd /c start ms-settings:apps-volume"
+        on_middle: "toggle_mute"
+
+  clock:
+    type: "yasb.clock.ClockWidget"
+    options:
+      label: "<span>\uf017</span> {%H:%M}"
+      update_interval: 1000
+
+  power_menu:
+    type: "yasb.custom.CustomWidget"
+    options:
+      class_name: "power-menu-widget"
+      label: "<span>󰐥</span>"
+      callbacks:
+        on_left: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/power_menu.py"'
+
+  notifications:
+    type: "yasb.notifications.NotificationsWidget"
+    options:
+      label: "<span>\udb80\udc9e</span> {count}"
+      label_alt: "{count} notifications"
+      hide_empty: true
+      tooltip: true
+      icons:
+        new: "\udb80\udc9e"
+        default: "\udb80\udc9a"
+      callbacks:
+        on_left: "toggle_notification"
+        on_middle: "do_nothing"
+        on_right: "toggle_label"
+
+  
