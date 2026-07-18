@@ -18,7 +18,7 @@
   --sky: #89dceb;
   --teal: #94e2d5;
   --green: #a6e3a1;
-  --yellow: #f9e2af;
+  --yellow: #ffd700;
   --peach: #fab387;
   --maroon: #eba0ac;
   --red: #f38ba8;
@@ -32,6 +32,7 @@
   --miku-cyan-dim: #39c5bb15;   /* Turquesa muy translúcido para bordes/resplandores */
   --miku-king: #1e90ff;        /* Azul rey para acentuar */
   --miku-ding-dong: #f9e2af;      /* Amarillo eléctrico para alertas */
+  --miku-dynamic-bar: #dfff00; /* Amarillo cyberpunk para barras dinámicas */
   
   /* Ajuste de Translucidez Cósmica: 
      0.0 (Invisible) a 1.0 (Opaco). */
@@ -153,6 +154,7 @@ QScrollBar::add-page, QScrollBar::sub-page { background: none; }
 /* Controles de Brillo y Volumen */
 .brightness-widget, .volume-widget { padding: 0 6px; }
 .brightness-widget .icon { color: var(--yellow); font-size: 14px; padding: 0 5px; }
+.brightness-widget .label {color: var(--pink); font-weight: 600; }
 .volume-widget .icon { color: var(--teal); font-size: 14px; margin-right: 3px; padding: 0 3px; }
 .volume-widget .label { color: var(--miku-cyan); font-weight: 600; }
 .volume-widget .label.muted, .volume-widget .icon.muted { color: var(--overlay0); }
@@ -338,7 +340,7 @@ QScrollBar::add-page, QScrollBar::sub-page { background: none; }
    VOLUME SLIDER: ESTILO ARCADE SIMÉTRICO
    ========================================= */
 
-QSlider {
+.audio-menu QSlider {
     background: transparent !important;
     min-height: 24px !important;
     margin-top: 18px !important; /* Separación clara entre los textos y la barra */
@@ -346,7 +348,7 @@ QSlider {
 }
 
 /* El "riel" o fondo de la barra */
-QSlider::groove:horizontal {
+.audio-menu QSlider::groove:horizontal {
     background: rgba(255, 255, 255, 0.15) !important;
     height: 6px !important; 
     border-radius: 3px !important;
@@ -354,18 +356,18 @@ QSlider::groove:horizontal {
 }
 
 /* La parte llena de la barra (Amarillo) */
-QSlider::sub-page:horizontal {
-    background: var(--yellow) !important;
+.audio-menu QSlider::sub-page:horizontal {
+    background: var(--miku-dynamic-bar) !important;
     border-radius: 3px !important;
 }
 
 /* Para que la parte vacía no haga cosas raras */
-QSlider::add-page:horizontal {
+.audio-menu QSlider::add-page:horizontal {
     background: transparent !important;
 }
 
 /* El "Thumb" o agarradera (Rectángulo Arcade) */
-QSlider::handle:horizontal {
+.audio-menu QSlider::handle:horizontal {
     background: var(--crust) !important; 
     border: 2px solid var(--yellow) !important; 
     width: 10px !important; 
@@ -376,7 +378,7 @@ QSlider::handle:horizontal {
 }
 
 /* Iluminar todo el rectángulo al tocarlo */
-QSlider::handle:horizontal:hover {
+.audio-menu QSlider::handle:horizontal:hover {
     background: var(--yellow) !important; 
 }
 
