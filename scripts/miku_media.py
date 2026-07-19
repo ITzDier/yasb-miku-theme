@@ -1,91 +1,134 @@
+from __future__ import annotations
+
 import asyncio
-import time
-import sys
-import os
+import html
 import json
-from winsdk.windows.media.control import GlobalSystemMediaTransportControlsSessionManager as MediaManager
+import sys
+import time
+from pathlib import Path
 
-sys.stdout.reconfigure(encoding='utf-8')
+try:
+    from winsdk.windows.media.control import (
+        GlobalSystemMediaTransportControlsSessionManager as MediaManager,
+    )
+    MEDIA_IMPORT_ERROR = None
+except (ImportError, OSError) as exc:
+    MediaManager = None
+    MEDIA_IMPORT_ERROR = str(exc)
 
-MAX_WIDTH = 45 
-SCROLL_SPEED = 2 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
-# Genera el archivo de caché en la misma carpeta que el script de forma segura
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-CACHE_FILE = os.path.join(SCRIPT_DIR, "media_cache.json")
+MAX_WIDTH = 45
+SCROLL_SPEED = 2
+SCRIPT_DIR = Path(__file__).resolve().parent
+CACHE_FILE = SCRIPT_DIR / "media_cache.json"
+READY_ICON = "\U000F0386"
+PLAYING_ICON = "\U000F0F70"
+PAUSED_ICON = "\U000F040A"
 
-async def control_media(command):
+
+def render_status(icon: str, text: str, text_color: str = "#39c5bb") -> str:
+    safe_text = html.escape(text, quote=False)
+    return (
+        f"<font color='#cba6f7'>{icon}</font>  "
+        f"<font color='{text_color}'>{safe_text}</font>"
+    )
+
+
+async def control_media(command: str) -> None:
+    if MediaManager is None:
+        return
     try:
         sessions = await MediaManager.request_async()
         current_session = sessions.get_current_session()
-        if current_session:
-            if command == "playpause":
-                await current_session.try_toggle_play_pause_async()
-            elif command == "next":
-                await current_session.try_skip_next_async()
-            elif command == "prev":
-                await current_session.try_skip_previous_async()
-    except:
-        pass
+        if current_session is None:
+            return
+        if command == "playpause":
+            await current_session.try_toggle_play_pause_async()
+        elif command == "next":
+            await current_session.try_skip_next_async()
+        elif command == "prev":
+            await current_session.try_skip_previous_async()
+    except Exception as exc:
+        print(f"Media control failed: {exc}", file=sys.stderr)
 
-async def get_media_info():
+
+async def get_media_info() -> tuple[str, str]:
+    if MediaManager is None:
+        return "", ""
     try:
         sessions = await MediaManager.request_async()
         current_session = sessions.get_current_session()
-        if current_session:
-            info = await current_session.try_get_media_properties_async()
-            title = info.title
-            artist = info.artist
-            
-            playback_status = current_session.get_playback_info().playback_status
-            icon = "󰽰" if playback_status == 4 else "󰐊" 
-            
-            full_text = f"{title} - {artist}" if artist else title
-            return full_text, icon
-    except:
-        pass
-    return "", ""
+        if current_session is None:
+            return "", ""
 
-def get_marquee_text(text, width):
+        info = await current_session.try_get_media_properties_async()
+        title = (info.title or "").strip()
+        artist = (info.artist or "").strip()
+        playback_status = current_session.get_playback_info().playback_status
+        icon = PLAYING_ICON if playback_status == 4 else PAUSED_ICON
+        text = f"{title} - {artist}" if artist else title
+        return text, icon
+    except Exception as exc:
+        print(f"Media query failed: {exc}", file=sys.stderr)
+        return "", ""
+
+
+def get_marquee_text(text: str, width: int) -> str:
     if len(text) <= width:
         return text
-    padded_text = text + "   *** " 
+    padded_text = text + "   *** "
     offset = int(time.time() * SCROLL_SPEED) % len(padded_text)
-    return (padded_text + padded_text)[offset:offset+width]
+    return (padded_text + padded_text)[offset : offset + width]
 
-async def main():
-    # 1. EJECUCIÓN DE CLICS (Usando la API nativa de Windows que no falla)
-    if len(sys.argv) > 1:
-        await control_media(sys.argv[1])
-        time.sleep(0.3)
-        
-    # 2. LÓGICA DE CACHÉ (El fix para el bug de YouTube y las flechas)
-    age = time.time() - os.path.getmtime(CACHE_FILE) if os.path.exists(CACHE_FILE) else 999
-    
-    # Solo llamamos a la API de Windows cada 4 segundos, o si hicimos un clic directo
-    if age > 4 or len(sys.argv) > 1:
+
+def load_cache() -> tuple[str, str]:
+    try:
+        data = json.loads(CACHE_FILE.read_text(encoding="utf-8"))
+        return str(data.get("text", "")), str(data.get("icon", ""))
+    except (OSError, ValueError, TypeError):
+        return "", ""
+
+
+def save_cache(text: str, icon: str) -> None:
+    try:
+        CACHE_FILE.write_text(
+            json.dumps({"text": text, "icon": icon}, ensure_ascii=False),
+            encoding="utf-8",
+        )
+    except OSError as exc:
+        print(f"Media cache write failed: {exc}", file=sys.stderr)
+
+
+async def main() -> int:
+    command = sys.argv[1].lower() if len(sys.argv) > 1 else ""
+    if command:
+        await control_media(command)
+        await asyncio.sleep(0.3)
+
+    if MediaManager is None:
+        print(render_status(READY_ICON, "Miku Media: instala requirements.txt", "#f9e2af"))
+        if MEDIA_IMPORT_ERROR:
+            print(f"winsdk import failed: {MEDIA_IMPORT_ERROR}", file=sys.stderr)
+        return 1
+
+    cache_age = time.time() - CACHE_FILE.stat().st_mtime if CACHE_FILE.exists() else 999
+    if cache_age > 4 or command:
         text, icon = await get_media_info()
-        try:
-            with open(CACHE_FILE, "w", encoding="utf-8") as f:
-                json.dump({"text": text, "icon": icon}, f)
-        except:
-            pass
+        save_cache(text, icon)
     else:
-        try:
-            with open(CACHE_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                text = data.get("text", "")
-                icon = data.get("icon", "")
-        except:
-            text, icon = "", ""
+        text, icon = load_cache()
 
-    # 3. DIBUJO DE LA BARRA
     if text:
-        display_text = get_marquee_text(text, MAX_WIDTH)
-        print(f"<font color='#cba6f7'>{icon}</font>  <font color='#39c5bb'>{display_text}</font>")
+        print(render_status(icon, get_marquee_text(text, MAX_WIDTH)))
     else:
-        print(f"<font color='#cba6f7'>󰎆</font>  <font color='#39c5bb'>Miku System Ready</font>")
+        print(render_status(READY_ICON, "Miku System Ready"))
+    return 0
 
-if __name__ == '__main__':
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    asyncio.run(main())
+
+if __name__ == "__main__":
+    policy = getattr(asyncio, "WindowsSelectorEventLoopPolicy", None)
+    if policy is not None:
+        asyncio.set_event_loop_policy(policy())
+    raise SystemExit(asyncio.run(main()))

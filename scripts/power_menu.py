@@ -5,7 +5,7 @@ from pathlib import Path
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QGridLayout, QVBoxLayout, QHBoxLayout, QLabel, QGraphicsDropShadowEffect
 from PyQt6.QtCore import Qt, QRect
 from PyQt6.QtGui import QFont, QColor, QPixmap, QPen, QPainter, QPainterPath, QFontMetrics
-from miku_avatar_gen import generar_avatar
+from mikugen import generar_avatar
 
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 DISPLAY_NAME = os.getenv("MIKU_DISPLAY_NAME", getpass.getuser()).strip()
@@ -52,7 +52,7 @@ class OutlinedLabel(QLabel):
 class MikuCosmicPowerMenu(QWidget):
     def __init__(self):
         super().__init__()
-        generar_avatar()
+        self.avatar_path = generar_avatar()
         self.init_ui()
         
     def init_ui(self):
@@ -171,7 +171,7 @@ class MikuCosmicPowerMenu(QWidget):
         
         # --- SECCIÓN DE LA IMAGEN DE PERFIL ---
         avatar_label = QLabel()
-        avatar_path = ASSETS_DIR / "miku_avatar.png"
+        avatar_path = self.avatar_path or (ASSETS_DIR / "Miku_Avatar.png")
         if avatar_path.exists():
             pixmap = QPixmap(str(avatar_path)).scaled(110, 110, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             avatar_label.setPixmap(pixmap)

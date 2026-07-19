@@ -51,9 +51,16 @@ widgets:
     type: "yasb.custom.CustomWidget"
     options:
       class_name: "tie-button"
-      label: "<img src='assets/Miku_Tie.png' width='14' height='30'>"
+      label: "{data}"
+      label_placeholder: ""
+      exec_options:
+        # launcher.py emits HTML containing the absolute file URI for Miku_Tie.png.
+        run_cmd: "py -3 -c __import__('runpy').run_path(__import__('os').path.expandvars(r'%USERPROFILE%/.config/yasb/scripts/launcher.py'),run_name='__main__') --bar-icon"
+        run_once: true
+        return_format: "string"
+        hide_empty: false
       callbacks:
-        on_left: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/launcher.py"'
+        on_left: 'exec cmd /c pyw -3 "%USERPROFILE%/.config/yasb/scripts/launcher.py"'
        
   glazewm_workspaces:
     type: "glazewm.workspaces.GlazewmWorkspacesWidget"
@@ -66,13 +73,14 @@ widgets:
     options:
       label: "<span>{icon}</span> {temp}"
       label_alt: "<span>{icon}</span> Mín {min_temp} / Máx {max_temp} | Humedad: {humidity}"
-      api_key: 'YOUR_WEATHERAPI_KEY'
+      # Copy .env.example to .env and set YASB_WEATHER_API_KEY there.
+      api_key: env
       update_interval: 600
       hide_decimal: true
-      location: 'YOUR_CITY'
+      location: env
       callbacks:
         # Clic izquierdo: Abre tu ventana Miku de Python
-        on_left: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/miku_weather.py"'
+        on_left: 'exec cmd /c pyw -3 "%USERPROFILE%/.config/yasb/scripts/miku_weather.py"'
         # Clic derecho: Alterna entre temperatura y la palabra CLIMA
         on_right: "toggle_label"
       icons: 
@@ -93,7 +101,7 @@ widgets:
       class_name: "ai-widget"
       label: "<span>\uDB81\uDE74</span>" # Icono de la IA
       callbacks:
-        on_left: 'exec cmd /c start "" pythonw "%USERPROFILE%/.config/yasb/scripts/miku_ai.py"'
+        on_left: 'exec cmd /c start "" pyw -3 "%USERPROFILE%/.config/yasb/scripts/miku_ai.py"'
   
   active_window:
     type: "yasb.active_window.ActiveWindowWidget"
@@ -157,15 +165,17 @@ widgets:
     type: "yasb.custom.CustomWidget"
     options:
       class_name: "media-widget"
-      label: "{data}" 
+      label: "{data}"
+      label_placeholder: "<font color='#39c5bb'>Miku System Ready</font>"
       exec_options:
-        run_cmd: 'python "%USERPROFILE%/.config/yasb/scripts/miku_media.py"'
-        run_interval: 1000 
+        run_cmd: "py -3 -c __import__('runpy').run_path(__import__('os').path.expandvars(r'%USERPROFILE%/.config/yasb/scripts/miku_media.py'),run_name='__main__')"
+        run_interval: 1000
         return_format: "string"
+        hide_empty: false
       callbacks:
-        on_left: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/miku_media.py" playpause'
-        on_middle: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/miku_media.py" prev'
-        on_right: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/miku_media.py" next'
+        on_left: 'exec cmd /c py -3 "%USERPROFILE%/.config/yasb/scripts/miku_media.py" playpause'
+        on_middle: 'exec cmd /c py -3 "%USERPROFILE%/.config/yasb/scripts/miku_media.py" prev'
+        on_right: 'exec cmd /c py -3 "%USERPROFILE%/.config/yasb/scripts/miku_media.py" next'
 
   systray:
     type: "yasb.systray.SystrayWidget"
@@ -177,6 +187,9 @@ widgets:
     type: "yasb.brightness.BrightnessWidget"
     options:
       label: "<span>{icon}</span>"
+      label_alt: "Brillo {percent}%"
+      # Keep the button visible even when a monitor does not expose DDC/CI controls.
+      hide_unsupported: false
 
   volume:
     type: "yasb.volume.VolumeWidget"
@@ -206,7 +219,7 @@ widgets:
       class_name: "power-menu-widget"
       label: "<span>󰐥</span>"
       callbacks:
-        on_left: 'exec cmd /c python "%USERPROFILE%/.config/yasb/scripts/power_menu.py"'
+        on_left: 'exec cmd /c pyw -3 "%USERPROFILE%/.config/yasb/scripts/power_menu.py"'
 
   notifications:
     type: "yasb.notifications.NotificationsWidget"

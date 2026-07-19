@@ -8,6 +8,9 @@ scripts/media_cache.json
 scripts/notif_count.txt
 
 # User-provided and generated avatar images
+assets/Avatar.png
+assets/Miku_Avatar.png
+# Legacy names from versions prior to the portable installer flow
 assets/profile.*
 assets/miku_avatar.png
 

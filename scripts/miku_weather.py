@@ -8,8 +8,12 @@ from PyQt6.QtCore import Qt, QEvent, QSize
 from PyQt6.QtGui import QCursor, QMovie, QColor
 
 # Configura estas variables en Windows antes de iniciar YASB.
-API_KEY = os.getenv("WEATHERAPI_KEY", "").strip()
-LOCATION = os.getenv("WEATHER_LOCATION", "YOUR_CITY").strip()
+API_KEY = os.getenv(
+    "YASB_WEATHER_API_KEY", os.getenv("WEATHERAPI_KEY", "")
+).strip()
+LOCATION = os.getenv(
+    "YASB_WEATHER_LOCATION", os.getenv("WEATHER_LOCATION", "YOUR_CITY")
+).strip()
 API_URL = "https://api.weatherapi.com/v1/forecast.json"
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 
@@ -130,7 +134,7 @@ class MikuWeatherPopup(QWidget):
 
     def load_weather_data(self):
         if not API_KEY or LOCATION == "YOUR_CITY":
-            self.lbl_cond.setText("Configura WEATHERAPI_KEY\ny WEATHER_LOCATION.")
+            self.lbl_cond.setText("Configura YASB_WEATHER_API_KEY\ny YASB_WEATHER_LOCATION.")
             return
 
         try:

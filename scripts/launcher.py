@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import html
 import json
 import math
 import operator
@@ -69,6 +70,14 @@ PURPLE = QColor("#A855F7")
 INK = QColor("#EAFBFF")
 MUTED = QColor("#75A9B9")
 
+
+def bar_icon_markup() -> str:
+    """Return a portable rich-text image tag for the YASB bar button."""
+    icon_path = ASSET_DIR / "Miku_Tie.png"
+    if not icon_path.is_file():
+        return ""
+    icon_uri = html.escape(icon_path.resolve().as_uri(), quote=True)
+    return f"<img src='{icon_uri}' width='14' height='30'>"
 
 @dataclass
 class SearchItem:
@@ -765,6 +774,10 @@ def connect_to_existing() -> bool:
 
 
 def main() -> int:
+    if "--bar-icon" in sys.argv:
+        print(bar_icon_markup(), flush=True)
+        return 0
+
     app = QApplication(sys.argv)
     app.setApplicationName("Miku Cosmic Search")
     app.setQuitOnLastWindowClosed(True)
